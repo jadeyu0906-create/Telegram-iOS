@@ -24,6 +24,5 @@ public struct OfficialBadgeView: View {
             )
             .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
             .textCase(.uppercase)
-            .tracking(0.5)
     }
 }

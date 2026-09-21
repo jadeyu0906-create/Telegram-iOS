@@ -18,7 +18,7 @@ public struct NeonButtonView: View {
         Button(action: action) {
             HStack(spacing: 8) {
                 Text(title)
-                    .font(.system(size: 14, weight: .extrabold))
+                    .font(.system(size: 14, weight: .heavy))
                     .foregroundColor(.black)
 
                 if let icon = icon {

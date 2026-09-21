@@ -17,7 +17,7 @@ public struct VerifiedCheckmarkView: View {
                 .foregroundColor(ColorPalette.brandNeon)
 
             Text(text)
-                .font(.system(size: 12, weight: .extrabold))
+                .font(.system(size: 12, weight: .heavy))
                 .foregroundColor(ColorPalette.brandNeon)
         }
         .padding(.horizontal, 12)

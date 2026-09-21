@@ -20,9 +20,8 @@ public struct SkipButtonView: View {
                     .foregroundColor(ColorPalette.textSecondary)
 
                 Text("\(countdown)s")
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.system(size: 13, weight: .bold).monospacedDigit())
                     .foregroundColor(ColorPalette.brandNeon)
-                    .monospacedDigit()
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 6)
