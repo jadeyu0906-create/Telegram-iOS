@@ -51,7 +51,7 @@ public struct SplashLogoSectionView: View {
                             .foregroundColor(ColorPalette.brandNeon)
 
                         Text("USDT")
-                            .font(.system(size: 11, weight: .extrabold))
+                            .font(.system(size: 11, weight: .heavy))
                             .foregroundColor(.black)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -79,20 +79,23 @@ public struct SplashLogoSectionView: View {
                 Text("splash.title.line1".localized)
                     .font(.system(size: 24, weight: .black))
                     .foregroundColor(.white)
-                    .tracking(-0.5)
                     .lineLimit(1)
 
                 Text("splash.title.line2".localized)
                     .font(.system(size: 24, weight: .black))
-                    .foregroundStyle(
+                    .lineLimit(1)
+                    .overlay(
                         LinearGradient(
                             colors: [ColorPalette.brandNeon, .white, ColorPalette.brandNeon.opacity(0.8)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
                     )
-                    .tracking(-0.5)
-                    .lineLimit(1)
+                    .mask(
+                        Text("splash.title.line2".localized)
+                            .font(.system(size: 24, weight: .black))
+                            .lineLimit(1)
+                    )
             }
 
             // 副标题
