@@ -32,6 +32,11 @@ import TelegramAudio
 import DebugSettingsUI
 import BackgroundTasks
 import UIKitRuntimeUtils
+
+#if ENABLE_WEB3_SPLASH
+import TelegramCustom
+import SwiftUI
+#endif
 import StoreKit
 import PhoneNumberFormat
 import AuthorizationUI
@@ -218,6 +223,9 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
     @objc var window: UIWindow?
     var nativeWindow: (UIWindow & WindowHost)?
     var mainWindow: Window1!
+    #if ENABLE_WEB3_SPLASH
+    private var splashWindow: UIWindow?
+    #endif
     private var dataImportSplash: LegacyDataImportSplash?
     private var memoryUsageOverlayView: UILabel?
     
@@ -393,7 +401,7 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
                 getContentAreaInScreenSpace: getContentAreaInScreenSpace
             )
         }
-        
+
         let (window, hostView) = nativeWindowHostView()
         let statusBarHost = ApplicationStatusBarHost(scene: window.windowScene)
         self.mainWindow = Window1(hostView: hostView, statusBarHost: statusBarHost)
@@ -1688,7 +1696,36 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
                 }))
             }
         })
-                
+
+        #if ENABLE_WEB3_SPLASH
+        // Web3 开屏广告页：在主窗口上层显示，3秒后自动切换回主窗口
+        if #available(iOS 14.0, *) {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self, let mainWindow = self.window else { return }
+
+                let splashView = SplashScreenView {
+                    // 开屏页结束，移除 splash 窗口，显示主窗口
+                    DispatchQueue.main.async {
+                        if let splashWindow = self.splashWindow {
+                            splashWindow.isHidden = true
+                            self.splashWindow = nil
+                        }
+                        mainWindow.makeKeyAndVisible()
+                    }
+                }
+
+                let splashController = UIHostingController(rootView: splashView)
+                splashController.view.backgroundColor = .black
+
+                let splashWindow = UIWindow(frame: UIScreen.main.bounds)
+                splashWindow.windowLevel = .alert + 1
+                splashWindow.rootViewController = splashController
+                splashWindow.makeKeyAndVisible()
+                self.splashWindow = splashWindow
+            }
+        }
+        #endif
+
         return true
     }
     
