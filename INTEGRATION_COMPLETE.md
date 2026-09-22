@@ -196,3 +196,65 @@ echo '"wallet.title" = "My Wallet";' >> submodules/TelegramCustom/Resources/Loca
 **作者**: Jade
 **完成日期**: 2026-09-21
 **状态**: ✅ 已完成，可构建测试
+
+---
+
+## 2. A02 登录页 (2026-09-22)
+
+### 功能概述
+实现 Web3 × Telegram 登录页，位于闪屏与 Telegram 原生登录之间。
+
+### 实现内容
+- **UI 组件** (7个)
+  - LoginViewModel：登录页视图模型（占位实现）
+  - LogoView：80×80pt Logo容器，荧光绿边框+发光效果
+  - TitleSectionView：标题与副标题
+  - TelegramLoginButton：Telegram蓝色登录按钮
+  - QuickAccessButton：一键免密按钮（灰色边框样式）
+  - LegalTextView：法律文案（服务条款与隐私政策）
+  - LoginScreenView：主容器视图
+
+- **多语言支持**
+  - 中文 (zh-Hans)
+  - 英文 (en)
+  - 日文 (ja)
+  - 韩文 (ko)
+
+- **启动流程集成**
+  - 流程：闪屏 (3秒) → 登录页 → Telegram 原生登录
+  - AppDelegate.swift 中实现 `showLoginScreen()` 方法
+  - 条件编译：`#if ENABLE_WEB3_SPLASH`
+
+### 技术细节
+- **模块**: `LoginScreenModule` (Bazel target)
+- **路径**: `submodules/TelegramCustom/Sources/Features/LoginScreen/`
+- **依赖**: TelegramCustomCore (ColorPalette, LocalizationManager)
+- **编译标志**: `--//Telegram:enableWeb3Splash`
+
+### 文件结构
+```
+submodules/TelegramCustom/Sources/Features/LoginScreen/
+├── ViewModels/
+│   └── LoginViewModel.swift
+└── Views/
+    ├── LoginScreenView.swift
+    └── Components/
+        ├── LogoView.swift
+        ├── TitleSectionView.swift
+        ├── TelegramLoginButton.swift
+        ├── QuickAccessButton.swift
+        └── LegalTextView.swift
+```
+
+### 设计规格
+- 参考：`docs/superpowers/specs/2026-09-22-login-screen-design.md`
+- 实施计划：`docs/superpowers/plans/2026-09-22-login-screen.md`
+
+### 提交记录
+- 21 个提交 (ae8c3f5c08 至 615572a2cd)
+- 包含：组件实现、多语言文案、BUILD配置、AppDelegate集成、修复
+
+### 测试状态
+✅ 编译通过
+✅ 模拟器启动成功
+⏳ UI功能待手动验证（闪屏→登录页流程）

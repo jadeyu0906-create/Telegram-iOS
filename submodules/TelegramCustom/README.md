@@ -43,6 +43,25 @@ TelegramCustom/
 - ✅ 支持中英日韩 4 种语言
 - ✅ 纯 SwiftUI 原生实现（零第三方依赖）
 
+### 2. LoginScreen (登录页)
+
+**位置**: `Sources/Features/LoginScreen/`
+
+**功能**: A02 Web3 × Telegram 登录页，位于闪屏后、TG原生登录前。
+
+**组件**:
+- `LoginViewModel`: 登录页视图模型
+- `LogoView`: Logo 容器（80×80pt，荧光绿发光）
+- `TitleSectionView`: 标题与副标题区域
+- `TelegramLoginButton`: Telegram 蓝色登录按钮
+- `QuickAccessButton`: 一键免密按钮（边框样式）
+- `LegalTextView`: 法律条款文案
+- `LoginScreenView`: 主容器视图
+
+**集成**: AppDelegate.swift 中通过 `showLoginScreen()` 调用
+
+**编译**: 需要 `--//Telegram:enableWeb3Splash` 标志
+
 ### 2. 统一色板（ColorPalette）
 
 ```swift
