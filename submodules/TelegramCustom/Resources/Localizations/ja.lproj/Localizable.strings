@@ -15,3 +15,11 @@
 "splash.feature.arbitration" = "公式仲裁";
 "splash.button.enter" = "Telegram Web3ログインへ";
 "splash.footer.guarantee" = "100%の資金がスマートコントラクトと準備金で保証";
+
+/* ログイン画面 */
+"login.title" = "Web3 × Telegram";
+"login.subtitle" = "分散型Web3エコシステムと軽量なメッセージングの融合。\n既存のアカウント、連絡先、グループを引き続き使用できます。";
+"login.button.telegram" = "Telegramアカウントでログイン";
+"login.button.quick" = "ワンクリックアクセス（クイックスタート）";
+"login.legal" = "ログインすることで、利用規約とプライバシーポリシーに同意したものとみなされます";
+"login.quick.coming_soon" = "機能開発中";
