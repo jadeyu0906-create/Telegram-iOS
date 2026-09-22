@@ -20,6 +20,16 @@ swift_library(
     visibility = ["//visibility:public"],
 )
 
+# 登录页模块
+swift_library(
+    name = "LoginScreenModule",
+    srcs = glob(["Sources/Features/LoginScreen/**/*.swift"]),
+    module_name = "LoginScreen",
+    deps = [":TelegramCustomCore"],
+    data = glob(["Resources/Localizations/**/*.strings"]),
+    visibility = ["//visibility:public"],
+)
+
 # 多语言资源
 apple_resource_bundle(
     name = "LocalizationResources",
@@ -35,6 +45,7 @@ swift_library(
     deps = [
         ":TelegramCustomCore",
         ":SplashScreenModule",
+        ":LoginScreenModule",
     ],
     visibility = ["//visibility:public"],
 )
