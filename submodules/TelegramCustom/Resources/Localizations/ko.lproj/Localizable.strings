@@ -15,3 +15,11 @@
 "splash.feature.arbitration" = "공식 중재";
 "splash.button.enter" = "Telegram Web3 로그인";
 "splash.footer.guarantee" = "100% 자금이 스마트 계약과 준비금으로 보호";
+
+/* 로그인 화면 */
+"login.title" = "Web3 × Telegram";
+"login.subtitle" = "분산형 Web3 생태계와 가벼운 메시징의 융합.\n기존 계정, 연락처 및 그룹을 계속 사용하세요.";
+"login.button.telegram" = "Telegram 계정으로 빠른 로그인";
+"login.button.quick" = "원클릭 액세스 (빠른 시작)";
+"login.legal" = "로그인하면 서비스 약관 및 개인정보 보호정책에 동의하는 것으로 간주됩니다";
+"login.quick.coming_soon" = "기능 개발 중";
