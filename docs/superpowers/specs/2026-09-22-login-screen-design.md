@@ -35,7 +35,7 @@
 
 **关键行为**：
 - **按钮 1 "Telegram 账号快捷登录"**: 调用 `onTelegramLogin()` 回调，进入 TG 原生登录
-- **按钮 2 "一键免密接入"**: 当前为占位（空实现或 Toast "功能开发中"），未来接入 SDK + 服务器 token
+- **按钮 2 "一键免密接入"**: 当前为占位（仅打印日志，不做任何UI响应），未来接入 SDK + 服务器 token
 - **无返回按钮**: 用户只能前进，符合原型设计
 
 ## 架构设计
@@ -254,10 +254,7 @@ public class LoginViewModel: ObservableObject {
     /// 处理一键免密登录（当前为占位实现）
     public func handleQuickAccess() {
         // TODO: 未来接入 SDK 和服务器 token 逻辑
-        // 当前可选方案：
-        // 1. 空实现（点击无响应）
-        // 2. 显示 Toast: "login.quick.coming_soon".localized
-
+        // 当前实现：仅打印日志，不做任何 UI 响应
         print("[LoginViewModel] 一键免密接入功能待开发")
     }
 
