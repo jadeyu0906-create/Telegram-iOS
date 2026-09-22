@@ -22,7 +22,7 @@ public struct LoginScreenView: View {
                     LogoView()
                     TitleSectionView()
                 }
-                .padding(.top, 80)
+                .padding(.top, 120)
                 .padding(.horizontal, 24)
 
                 Spacer()
