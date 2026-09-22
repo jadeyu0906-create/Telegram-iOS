@@ -1705,7 +1705,9 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
 
                 let splashView = SplashScreenView { [weak self] in
                     // 开屏页结束，显示登录页
+                    print("🟢🟢🟢 SplashScreenView callback triggered!")
                     DispatchQueue.main.async {
+                        print("🟢🟢🟢 Calling showLoginScreen()...")
                         self?.showLoginScreen()
                     }
                 }
@@ -1728,9 +1730,15 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
     #if ENABLE_WEB3_SPLASH
     @available(iOS 14.0, *)
     private func showLoginScreen() {
-        guard let mainWindow = self.window else { return }
+        print("🔴🔴🔴 showLoginScreen() called!")
+        guard let mainWindow = self.window else {
+            print("🔴🔴🔴 mainWindow is nil!")
+            return
+        }
+        print("🔴🔴🔴 Creating LoginScreenView...")
 
         let loginView = LoginScreenView { [weak self] in
+            print("🔴🔴🔴 LoginScreenView callback triggered!")
             // 登录页完成，移除 splash 窗口，显示主窗口
             DispatchQueue.main.async {
                 if let splashWindow = self?.splashWindow {
@@ -1743,10 +1751,14 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
 
         let loginController = UIHostingController(rootView: loginView)
         loginController.view.backgroundColor = .black
+        print("🔴🔴🔴 LoginController created, setting as rootViewController...")
 
         // 复用已存在的 splashWindow 或保持其可见
         if let splashWindow = self.splashWindow {
             splashWindow.rootViewController = loginController
+            print("🔴🔴🔴 LoginController set as splashWindow rootViewController")
+        } else {
+            print("🔴🔴🔴 WARNING: splashWindow is nil!")
         }
     }
     #endif
