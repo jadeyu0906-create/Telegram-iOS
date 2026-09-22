@@ -15,3 +15,11 @@
 "splash.feature.arbitration" = "官方公正仲裁";
 "splash.button.enter" = "进入 Telegram Web3 登录页";
 "splash.footer.guarantee" = "100% 资金由 u多担保 智能合约与赔付准备金双重托底";
+
+/* 登录页 */
+"login.title" = "Web3 × Telegram";
+"login.subtitle" = "去中心化 Web3 生态与轻量社交的融合体。\n继续使用原有账号、联系人与群组。";
+"login.button.telegram" = "Telegram 账号快捷登录";
+"login.button.quick" = "一键免密接入 (快速体验)";
+"login.legal" = "登录即代表您同意《服务条款》与《隐私政策》";
+"login.quick.coming_soon" = "功能开发中，敬请期待";
