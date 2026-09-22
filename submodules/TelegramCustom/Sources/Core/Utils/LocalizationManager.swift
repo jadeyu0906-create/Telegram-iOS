@@ -2,8 +2,11 @@ import Foundation
 
 /// 多语言管理器 - 统一管理本地化字符串
 public enum LocalizationManager {
-    /// 获取资源bundle - 直接使用主bundle，资源文件会被打包进去
-    private static var resourceBundle: Bundle = Bundle.main
+    /// 获取资源bundle - 使用当前模块的bundle
+    private static var resourceBundle: Bundle = {
+        // 尝试从 TelegramCustomCore 类获取 bundle
+        return Bundle(for: BundleToken.self)
+    }()
 
     /// 获取本地化字符串
     public static func string(forKey key: String, comment: String = "") -> String {
@@ -16,6 +19,11 @@ public enum LocalizationManager {
         return String(format: format, arguments: arguments)
     }
 }
+
+// MARK: - Bundle Token
+
+/// 用于获取当前模块 bundle 的标记类
+private final class BundleToken {}
 
 // MARK: - String Extension
 
