@@ -5,3 +5,4 @@ import Foundation
 
 @_exported import TelegramCustomCore
 @_exported import SplashScreen
+@_exported import LoginScreen
