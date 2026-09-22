@@ -15,3 +15,11 @@
 "splash.feature.arbitration" = "Official Arbitration";
 "splash.button.enter" = "Enter Telegram Web3 Login";
 "splash.footer.guarantee" = "100% Funds Secured by Smart Contracts & Reserve";
+
+/* Login Screen */
+"login.title" = "Web3 × Telegram";
+"login.subtitle" = "Decentralized Web3 ecosystem integrated with lightweight messaging.\nContinue with your existing account, contacts, and groups.";
+"login.button.telegram" = "Quick Login with Telegram";
+"login.button.quick" = "One-Click Access (Quick Start)";
+"login.legal" = "By logging in, you agree to our Terms of Service and Privacy Policy";
+"login.quick.coming_soon" = "Feature coming soon";
