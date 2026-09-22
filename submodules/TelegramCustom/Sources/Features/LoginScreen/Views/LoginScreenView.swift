@@ -14,7 +14,7 @@ public struct LoginScreenView: View {
         ZStack {
             // 黑色背景
             ColorPalette.backgroundBlack
-                .ignoresSafeArea()
+                .edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 0) {
                 // 上部内容区
