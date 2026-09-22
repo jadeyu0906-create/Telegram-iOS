@@ -1701,7 +1701,7 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
         // Web3 开屏广告页：在主窗口上层显示，3秒后自动切换回主窗口
         if #available(iOS 14.0, *) {
             DispatchQueue.main.async { [weak self] in
-                guard let self = self, let mainWindow = self.window else { return }
+                guard let self = self else { return }
 
                 let splashView = SplashScreenView { [weak self] in
                     // 开屏页结束，显示登录页
