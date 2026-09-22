@@ -1703,14 +1703,10 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
             DispatchQueue.main.async { [weak self] in
                 guard let self = self, let mainWindow = self.window else { return }
 
-                let splashView = SplashScreenView {
-                    // 开屏页结束，移除 splash 窗口，显示主窗口
+                let splashView = SplashScreenView { [weak self] in
+                    // 开屏页结束，显示登录页
                     DispatchQueue.main.async {
-                        if let splashWindow = self.splashWindow {
-                            splashWindow.isHidden = true
-                            self.splashWindow = nil
-                        }
-                        mainWindow.makeKeyAndVisible()
+                        self?.showLoginScreen()
                     }
                 }
 
@@ -1722,6 +1718,29 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
                 splashWindow.rootViewController = splashController
                 splashWindow.makeKeyAndVisible()
                 self.splashWindow = splashWindow
+            }
+        }
+
+        private func showLoginScreen() {
+            guard let mainWindow = self.window else { return }
+
+            let loginView = LoginScreenView { [weak self] in
+                // 登录页完成，移除 splash 窗口，显示主窗口
+                DispatchQueue.main.async {
+                    if let splashWindow = self?.splashWindow {
+                        splashWindow.isHidden = true
+                        self?.splashWindow = nil
+                    }
+                    mainWindow.makeKeyAndVisible()
+                }
+            }
+
+            let loginController = UIHostingController(rootView: loginView)
+            loginController.view.backgroundColor = .black
+
+            // 复用已存在的 splashWindow 或保持其可见
+            if let splashWindow = self.splashWindow {
+                splashWindow.rootViewController = loginController
             }
         }
         #endif
