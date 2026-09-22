@@ -38,7 +38,8 @@ if [[ "${1:-}" != "--no-build" ]]; then
         '--@build_bazel_rules_swift//swift:copt=-j' \
         '--@build_bazel_rules_swift//swift:copt=13' \
         --//Telegram:disableExtensions \
-        --//Telegram:disableProvisioningProfiles
+        --//Telegram:disableProvisioningProfiles \
+        --//Telegram:enableWeb3Splash
 else
     echo "==> 跳过编译（--no-build）"
 fi
