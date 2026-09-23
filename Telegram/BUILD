@@ -87,6 +87,11 @@ bool_flag(
     visibility = ["//visibility:public"],
 )
 
+# ==================== CUSTOM START ====================
+# 描述：启用 Web3 开屏页与登录页的编译标志
+# 文件：Telegram/BUILD
+# 日期：2026-09-22
+# 注意：同步 upstream 时保留此块
 bool_flag(
     name = "enableWeb3Splash",
     build_setting_default = False,

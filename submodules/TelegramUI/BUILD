@@ -47,10 +47,15 @@ swift_library(
     ]),
     copts = [
         "-warnings-as-errors",
+    # ==================== CUSTOM START ====================
+    # 描述：为 Web3 功能添加条件编译宏
+    # 文件：TelegramUI/BUILD
+    # 日期：2026-09-22
     ] + select({
         "//Telegram:enableWeb3SplashSetting": ["-DENABLE_WEB3_SPLASH"],
         "//conditions:default": [],
     }),
+    # ==================== CUSTOM END ====================
     deps = [
         "//third-party/recaptcha:RecaptchaEnterprise",
         "//submodules/SSignalKit/SwiftSignalKit:SwiftSignalKit",
@@ -541,10 +546,16 @@ swift_library(
         "//submodules/TelegramUI/Components/RichTextEditor:RichTextEditorUIKit",
         "//submodules/TelegramUI/Components/RichTextEditorMediaView",
         "//submodules/TelegramUI/Components/Chat/ChatRichTextEditorComposer",
+    # ==================== CUSTOM START ====================
+    # 描述：条件依赖 TelegramCustom 模块
+    # 文件：TelegramUI/BUILD
+    # 日期：2026-09-22
     ] + select({
         "//Telegram:enableWeb3SplashSetting": ["//submodules/TelegramCustom:TelegramCustom"],
         "//conditions:default": [],
-    }) + select({
+    })
+    # ==================== CUSTOM END ====================
+    + select({
         "@build_bazel_rules_apple//apple:ios_arm64": appcenter_targets,
         "//build-system:ios_sim_arm64": [],
     }),

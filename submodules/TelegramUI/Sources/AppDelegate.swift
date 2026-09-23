@@ -33,10 +33,16 @@ import DebugSettingsUI
 import BackgroundTasks
 import UIKitRuntimeUtils
 
+// ==================== CUSTOM START ====================
+// 描述：导入 TelegramCustom 模块（SplashScreen + LoginScreen）
+// 文件：AppDelegate.swift
+// 日期：2026-09-22
+// 注意：同步 upstream 时保留此块
 #if ENABLE_WEB3_SPLASH
 import TelegramCustom
 import SwiftUI
 #endif
+// ==================== CUSTOM END ====================
 import StoreKit
 import PhoneNumberFormat
 import AuthorizationUI
@@ -223,9 +229,14 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
     @objc var window: UIWindow?
     var nativeWindow: (UIWindow & WindowHost)?
     var mainWindow: Window1!
+    // ==================== CUSTOM START ====================
+    // 描述：存储开屏页/登录页的窗口引用
+    // 文件：AppDelegate.swift
+    // 日期：2026-09-22
     #if ENABLE_WEB3_SPLASH
     private var splashWindow: UIWindow?
     #endif
+    // ==================== CUSTOM END ====================
     private var dataImportSplash: LegacyDataImportSplash?
     private var memoryUsageOverlayView: UILabel?
     
@@ -1697,6 +1708,12 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
             }
         })
 
+        // ==================== CUSTOM START ====================
+        // 描述：集成 Web3 开屏页与登录页
+        // 流程：App 启动 → SplashScreen (3秒) → LoginScreen → TG 原生登录
+        // 文件：AppDelegate.swift
+        // 日期：2026-09-22
+        // 注意：同步 upstream 时保留此块
         #if ENABLE_WEB3_SPLASH
         // Web3 开屏广告页：在主窗口上层显示，3秒后自动切换回主窗口
         if #available(iOS 14.0, *) {
@@ -1721,10 +1738,16 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
             }
         }
         #endif
+        // ==================== CUSTOM END ====================
 
         return true
     }
 
+    // ==================== CUSTOM START ====================
+    // 描述：显示登录页（在开屏页之后）
+    // 文件：AppDelegate.swift
+    // 日期：2026-09-22
+    // 注意：同步 upstream 时保留此块
     #if ENABLE_WEB3_SPLASH
     @available(iOS 14.0, *)
     private func showLoginScreen() {
@@ -1750,6 +1773,7 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
         }
     }
     #endif
+    // ==================== CUSTOM END ====================
 
     private var backgroundSessionSourceDataDisposables: [String: Disposable] = [:]
     private var backgroundUploadResultSubscribers: [String: Bag<(String?) -> Void>] = [:]

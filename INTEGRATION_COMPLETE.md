@@ -27,20 +27,40 @@ submodules/TelegramCustom/          # 新增独立模块
         └── ko.lproj/
 ```
 
-### 2. 修改的文件（3 个文件，条件编译包裹）
+### 2. 修改的官方文件（已添加 CUSTOM 标记）
 
-#### ① `Telegram/BUILD`
-- 添加 `enableWeb3Splash` flag 定义
-- 在主 target 的 frameworks 里条件添加 TelegramCustom
+所有对官方源码的修改都使用 `// ==================== CUSTOM START/END ====================` 标记，方便同步 upstream 时识别和保留。
 
-#### ② `submodules/TelegramUI/BUILD`
-- copts 添加 `-DENABLE_WEB3_SPLASH` 编译标志（条件）
-- deps 添加 TelegramCustom 依赖（条件）
+| 文件 | 改动内容 | 行号 | 标记 |
+|------|---------|------|------|
+| `submodules/TelegramUI/Sources/AppDelegate.swift` | 导入 TelegramCustom 模块 | 36-43 | ✅ CUSTOM |
+| `submodules/TelegramUI/Sources/AppDelegate.swift` | 添加 splashWindow 属性 | 230-238 | ✅ CUSTOM |
+| `submodules/TelegramUI/Sources/AppDelegate.swift` | 集成 SplashScreen 启动逻辑 | 1706-1736 | ✅ CUSTOM |
+| `submodules/TelegramUI/Sources/AppDelegate.swift` | 添加 showLoginScreen() 方法 | 1741-1771 | ✅ CUSTOM |
+| `Telegram/BUILD` | 添加 enableWeb3Splash 标志 | 90-111 | ✅ CUSTOM |
+| `submodules/TelegramUI/BUILD` | 添加条件编译宏 | 48-58 | ✅ CUSTOM |
+| `submodules/TelegramUI/BUILD` | 添加条件依赖 TelegramCustom | 549-558 | ✅ CUSTOM |
 
-#### ③ `submodules/TelegramUI/Sources/AppDelegate.swift`
-- import 区域添加条件导入（5 行）
-- 类属性添加 `splashWindow`（3 行）
-- `didFinishLaunchingWithOptions` 末尾添加开屏逻辑（28 行）
+**标记示例**:
+```swift
+// ==================== CUSTOM START ====================
+// 描述：集成 Web3 开屏页与登录页
+// 文件：AppDelegate.swift
+// 日期：2026-09-22
+// 注意：同步 upstream 时保留此块
+#if ENABLE_WEB3_SPLASH
+import TelegramCustom
+import SwiftUI
+#endif
+// ==================== CUSTOM END ====================
+```
+
+**同步 upstream 时的操作**:
+1. 运行 `./dev/sync-upstream.sh --push`
+2. 如遇冲突，搜索 `CUSTOM START` 标记
+3. 保留所有标记内的代码块
+4. 其他部分采用 upstream 版本
+5. 验证所有标记完整性（START 和 END 数量相等）
 
 ---
 
