@@ -23,7 +23,10 @@ import MediaEditorScreen
 // 描述：导入 TelegramCustom 以使用 DiscoverPlaceholderViewController
 // 文件：TelegramRootController.swift
 // 日期：2026-09-23
+// 注意：同步 upstream 时保留此块
+#if ENABLE_WEB3_SPLASH
 import TelegramCustom
+#endif
 // ==================== CUSTOM END ====================
 import LegacyComponents
 import LegacyMediaPickerUI
@@ -226,12 +229,21 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         // 新顺序：Chats, Contacts, Discover, Settings (跳过 Calls)
         // 文件：TelegramRootController.swift - addRootControllers
         // 日期：2026-09-23
+        // 注意：同步 upstream 时保留此块
+        #if ENABLE_WEB3_SPLASH
         controllers.append(chatListController)
         controllers.append(contactsController)
         let discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
         discoverController.tabBarItem.title = "tabbar.discover.title".localized
         discoverController.tabBarItem.image = UIImage(systemName: "safari")
         controllers.append(discoverController)
+        #else
+        controllers.append(contactsController)
+        if showCallsTab {
+            controllers.append(callListController)
+        }
+        controllers.append(chatListController)
+        #endif
         // ==================== CUSTOM END ====================
 
         var restoreSettignsController: (ViewController & SettingsController)?
@@ -253,7 +265,11 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         accountSettingsController.parentController = self
         controllers.append(accountSettingsController)
 
+        #if ENABLE_WEB3_SPLASH
         tabBarController.setControllers(controllers, selectedIndex: restoreSettignsController != nil ? (controllers.count - 1) : 0)
+        #else
+        tabBarController.setControllers(controllers, selectedIndex: restoreSettignsController != nil ? (controllers.count - 1) : (controllers.count - 2))
+        #endif
 
         self.contactsController = contactsController
         self.callListController = callListController
@@ -270,6 +286,11 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         var controllers: [ViewController] = []
 
         // ==================== CUSTOM START ====================
+        // 描述：重新排列 Tab 顺序，添加发现页
+        // 文件：TelegramRootController.swift - updateRootControllers
+        // 日期：2026-09-23
+        // 注意：同步 upstream 时保留此块
+        #if ENABLE_WEB3_SPLASH
         controllers.append(self.chatListController!)
         controllers.append(self.contactsController!)
         let discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
@@ -277,6 +298,14 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         discoverController.tabBarItem.image = UIImage(systemName: "safari")
         controllers.append(discoverController)
         controllers.append(self.accountSettingsController!)
+        #else
+        controllers.append(self.contactsController!)
+        if showCallsTab {
+            controllers.append(self.callListController!)
+        }
+        controllers.append(self.chatListController!)
+        controllers.append(self.accountSettingsController!)
+        #endif
         // ==================== CUSTOM END ====================
 
         rootTabController.setControllers(controllers, selectedIndex: nil)

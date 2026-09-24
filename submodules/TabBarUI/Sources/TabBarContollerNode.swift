@@ -13,7 +13,9 @@ import GlassControls
 // 文件：TabBarControllerNode.swift
 // 日期：2026-09-23
 // 注意：同步 upstream 时保留此块
+#if ENABLE_WEB3_SPLASH
 import TelegramCustom
+#endif
 // ==================== CUSTOM END ====================
 
 final class TabBarControllerNode: ASDisplayNode {
@@ -201,6 +203,11 @@ final class TabBarControllerNode: ASDisplayNode {
     }
 
     // ==================== CUSTOM START ====================
+    // 描述：转换 Tab 项为自定义格式
+    // 文件：TabBarControllerNode.swift
+    // 日期：2026-09-23
+    // 注意：同步 upstream 时保留此块
+    #if ENABLE_WEB3_SPLASH
     private func convertToCustomTabBarItems() -> [CustomTabBarComponent.Item] {
         return self.tabBarItems.enumerated().map { index, nodeItem in
             let tabBarItem = nodeItem.item
@@ -252,6 +259,7 @@ final class TabBarControllerNode: ASDisplayNode {
             )
         }
     }
+    #endif
     // ==================== CUSTOM END ====================
 
     private func updateImpl(params: Params, transition: ContainedViewLayoutTransition) -> CGFloat {
@@ -290,6 +298,11 @@ final class TabBarControllerNode: ASDisplayNode {
             tabBarTransition = .immediate
         }
         // ==================== CUSTOM START ====================
+        // 描述：使用自定义 Tab Bar 组件（荧光绿品牌色）
+        // 文件：TabBarControllerNode.swift
+        // 日期：2026-09-23
+        // 注意：同步 upstream 时保留此块
+        #if ENABLE_WEB3_SPLASH
         let tabBarSize = self.tabBarView.update(
             transition: tabBarTransition,
             component: AnyComponent(CustomTabBarComponent(
@@ -302,6 +315,67 @@ final class TabBarControllerNode: ASDisplayNode {
             environment: {},
             containerSize: CGSize(width: params.layout.size.width - sideInset * 2.0, height: 100.0)
         )
+        #else
+        let tabBarSize = self.tabBarView.update(
+            transition: tabBarTransition,
+            component: AnyComponent(TabBarComponent(
+                theme: self.theme,
+                strings: self.strings,
+                items: self.tabBarItems.map { item in
+                    let itemId = AnyHashable(ObjectIdentifier(item.item))
+                    let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) ?? 0
+                    return TabBarComponent.Item(
+                        content: .tabBarItem(item.item),
+                        action: { [weak self] isLongTap in
+                            guard let self else {
+                                return
+                            }
+                            if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
+                                self.itemSelected(index, isLongTap, [])
+                            }
+                        },
+                        doubleTapAction: self.itemHasDoubleTapAction(index) ? { [weak self] in
+                            guard let self else {
+                                return
+                            }
+                            if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
+                                self.itemDoubleTapped(index)
+                            }
+                        } : nil,
+                        contextAction: { [weak self] gesture, sourceView in
+                            guard let self else {
+                                return
+                            }
+                            if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
+                                self.contextAction(index, sourceView, gesture)
+                            }
+                        }
+                    )
+                },
+                search: self.currentController?.tabBarSearchState.flatMap { tabBarSearchState in
+                    return TabBarComponent.Search(
+                        isActive: tabBarSearchState.isActive,
+                        activate: { [weak self] in
+                            guard let self else {
+                                return
+                            }
+                            self.activateSearch()
+                        },
+                        deactivate: { [weak self] in
+                            guard let self else {
+                                return
+                            }
+                            self.deactivateSearch()
+                        }
+                    )
+                },
+                selectedId: selectedId,
+                outerInsets: UIEdgeInsets(top: 0.0, left: sideInset, bottom: tabBarBottomInset, right: sideInset)
+            )),
+            environment: {},
+            containerSize: CGSize(width: params.layout.size.width - sideInset * 2.0, height: 100.0)
+        )
+        #endif
         // ==================== CUSTOM END ====================
         let tabBarFrame = CGRect(origin: CGPoint(x: floor((params.layout.size.width - tabBarSize.width) * 0.5), y: params.layout.size.height - (self.tabBarHidden ? 0.0 : (tabBarSize.height + tabBarBottomInset))), size: tabBarSize)
         

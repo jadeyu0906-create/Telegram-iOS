@@ -8,7 +8,16 @@ swift_library(
     ]),
     copts = [
         "-warnings-as-errors",
-    ],
+    ] + select({
+        # ==================== CUSTOM START ====================
+        # 描述：为 Web3 自定义 Tab Bar 添加条件编译宏
+        # 文件：TabBarUI/BUILD
+        # 日期：2026-09-23
+        # 注意：同步 upstream 时保留此块
+        "//Telegram:enableWeb3SplashSetting": ["-DENABLE_WEB3_SPLASH"],
+        # ==================== CUSTOM END ====================
+        "//conditions:default": [],
+    }),
     deps = [
         "//submodules/AsyncDisplayKit",
         "//submodules/Display",
@@ -20,8 +29,16 @@ swift_library(
         "//submodules/Components/ComponentDisplayAdapters",
         "//submodules/TelegramUI/Components/TabBarComponent",
         "//submodules/TelegramUI/Components/GlassControls",
-        "//submodules/TelegramCustom:TelegramCustom",
-    ],
+    ] + select({
+        # ==================== CUSTOM START ====================
+        # 描述：Web3 自定义 Tab Bar 依赖 TelegramCustom 模块
+        # 文件：TabBarUI/BUILD
+        # 日期：2026-09-23
+        # 注意：同步 upstream 时保留此块
+        "//Telegram:enableWeb3SplashSetting": ["//submodules/TelegramCustom:TelegramCustom"],
+        # ==================== CUSTOM END ====================
+        "//conditions:default": [],
+    }),
     visibility = [
         "//visibility:public",
     ],

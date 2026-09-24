@@ -656,8 +656,12 @@ public struct PresentationThemeSettings: Codable {
         // 描述：修改默认主题为夜间黑色主题，匹配 Web3 荧光绿设计
         // 文件：PresentationThemeSettings.swift
         // 日期：2026-09-23
+        // 注意：同步 upstream 时保留此块
+        #if ENABLE_WEB3_SPLASH
         return PresentationThemeSettings(theme: .builtin(.night), themePreferredBaseTheme: [:], themeSpecificAccentColors: [:], themeSpecificChatWallpapers: [:], useSystemFont: true, fontSize: .regular, listsFontSize: .regular, chatBubbleSettings: .default, automaticThemeSwitchSetting: AutomaticThemeSwitchSetting(force: false, trigger: .system, theme: .builtin(.night)), largeEmoji: true, reduceMotion: false)
-        // 原始值（白天主题）：.builtin(.dayClassic)
+        #else
+        return PresentationThemeSettings(theme: .builtin(.dayClassic), themePreferredBaseTheme: [:], themeSpecificAccentColors: [:], themeSpecificChatWallpapers: [:], useSystemFont: true, fontSize: .regular, listsFontSize: .regular, chatBubbleSettings: .default, automaticThemeSwitchSetting: AutomaticThemeSwitchSetting(force: false, trigger: .system, theme: .builtin(.night)), largeEmoji: true, reduceMotion: false)
+        #endif
         // ==================== CUSTOM END ====================
     }
     
