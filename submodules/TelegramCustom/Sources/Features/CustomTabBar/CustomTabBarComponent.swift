@@ -114,6 +114,7 @@ public final class CustomTabBarComponent: Component {
 
     public final class View: UIView {
     private let backgroundView: UIView
+    private let separatorView: UIView
     private var itemViews: [AnyHashable: CustomTabBarItemView] = [:]
 
     private var component: CustomTabBarComponent?
@@ -122,9 +123,13 @@ public final class CustomTabBarComponent: Component {
         self.backgroundView = UIView()
         self.backgroundView.backgroundColor = .black
 
+        self.separatorView = UIView()
+        self.separatorView.backgroundColor = ColorPalette.borderClrUI
+
         super.init(frame: frame)
 
         self.addSubview(self.backgroundView)
+        self.addSubview(self.separatorView)
     }
 
     required init?(coder: NSCoder) {
@@ -141,6 +146,10 @@ public final class CustomTabBarComponent: Component {
         // 更新背景（覆盖到屏幕底部，含安全区域）
         let backgroundFrame = CGRect(origin: .zero, size: CGSize(width: availableSize.width, height: totalHeight))
         transition.setFrame(view: self.backgroundView, frame: backgroundFrame)
+
+        // 顶部分割线（1pt，颜色 #292929）
+        let separatorFrame = CGRect(origin: .zero, size: CGSize(width: availableSize.width, height: 1.0))
+        transition.setFrame(view: self.separatorView, frame: separatorFrame)
 
         // 计算每个 item 的宽度
         let itemWidth = availableSize.width / CGFloat(component.items.count)

@@ -46,8 +46,14 @@ public enum ColorPalette {
     /// Surface 3
     public static let surface3 = Color(hex: "202020")
 
+    /// 边框颜色（hex 常量，Color 和 UIKit 版本共用，避免重复写 hex）
+    private static let borderClrHex = "292929"
+
     /// 边框颜色
-    public static let borderClr = Color(hex: "292929")
+    public static let borderClr = Color(hex: borderClrHex)
+
+    /// 边框颜色（UIKit 版本）
+    public static let borderClrUI = UIColor(hex: borderClrHex)
 
     /// 静音文本颜色
     public static let txtMuted = Color(hex: "666666")
