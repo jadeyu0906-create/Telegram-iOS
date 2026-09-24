@@ -33,3 +33,23 @@
 /* Discover Placeholder */
 "discover.placeholder.title" = "发现";
 "discover.placeholder.subtitle" = "即将推出";
+
+/* Discover */
+"discover.tab.wallet" = "Web3 钱包";
+"discover.tab.explore" = "探索生态";
+"discover.banner.tag" = "超级生态推广";
+"discover.banner.title" = "Sui & ETH 跨链 Gasless 交易节";
+"discover.banner.subtitle" = "无感知签名，平台补贴 100% 链上 Gas 费";
+"discover.banner.action" = "立即参与 →";
+"discover.tools.section" = "核心工具能力";
+"discover.tool.meeting" = "Web3 会议";
+"discover.tool.meeting.desc" = "高清/可控录制";
+"discover.tool.vpn" = "安全 VPN";
+"discover.tool.vpn.desc" = "剩余 8.5 GB";
+"discover.tool.escrow" = "u多担保";
+"discover.tool.escrow.desc" = "多签/防骗查验";
+"discover.dapp.section" = "热门 Web3 DApp";
+"discover.dapp.uniswap.desc" = "去中心化 Swap 交易所";
+"discover.dapp.opensea.desc" = "NFT 交易与收藏品市场";
+"discover.dapp.action" = "调用";
+"discover.comingSoon" = "即将推出";

@@ -33,3 +33,23 @@
 /* Discover Placeholder */
 "discover.placeholder.title" = "Discover";
 "discover.placeholder.subtitle" = "Coming Soon";
+
+/* Discover */
+"discover.tab.wallet" = "Web3 Wallet";
+"discover.tab.explore" = "Explore";
+"discover.banner.tag" = "Super Ecosystem Promo";
+"discover.banner.title" = "Sui & ETH Cross-chain Gasless Trading Festival";
+"discover.banner.subtitle" = "Seamless signing, platform covers 100% on-chain gas fees";
+"discover.banner.action" = "Join Now →";
+"discover.tools.section" = "Core Tools";
+"discover.tool.meeting" = "Web3 Meeting";
+"discover.tool.meeting.desc" = "HD/Controllable Recording";
+"discover.tool.vpn" = "Secure VPN";
+"discover.tool.vpn.desc" = "8.5 GB Remaining";
+"discover.tool.escrow" = "u-Duo Escrow";
+"discover.tool.escrow.desc" = "Multi-sig/Anti-fraud";
+"discover.dapp.section" = "Hot Web3 DApps";
+"discover.dapp.uniswap.desc" = "Decentralized Swap Exchange";
+"discover.dapp.opensea.desc" = "NFT Marketplace";
+"discover.dapp.action" = "Open";
+"discover.comingSoon" = "Coming Soon";

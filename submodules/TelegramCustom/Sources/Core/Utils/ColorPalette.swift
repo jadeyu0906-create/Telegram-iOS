@@ -52,6 +52,9 @@ public enum ColorPalette {
     /// 静音文本颜色
     public static let txtMuted = Color(hex: "666666")
 
+    /// 次要文字（原型 txtSub）
+    public static let textSub = Color(hex: "A1A1A1")
+
     /// 品牌暗色
     public static let brandDark = Color(hex: "a3cc3b")
 

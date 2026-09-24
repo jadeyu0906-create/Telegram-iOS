@@ -233,7 +233,12 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         #if ENABLE_WEB3_SPLASH
         controllers.append(chatListController)
         controllers.append(contactsController)
-        let discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
+        let discoverController: ViewController
+        if #available(iOS 14.0, *) {
+            discoverController = DiscoverViewController(navigationBarPresentationData: nil)
+        } else {
+            discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
+        }
         discoverController.tabBarItem.title = "tabbar.discover.title".localized
         discoverController.tabBarItem.image = UIImage(systemName: "safari")
         controllers.append(discoverController)
@@ -293,7 +298,12 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         #if ENABLE_WEB3_SPLASH
         controllers.append(self.chatListController!)
         controllers.append(self.contactsController!)
-        let discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
+        let discoverController: ViewController
+        if #available(iOS 14.0, *) {
+            discoverController = DiscoverViewController(navigationBarPresentationData: nil)
+        } else {
+            discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
+        }
         discoverController.tabBarItem.title = "tabbar.discover.title".localized
         discoverController.tabBarItem.image = UIImage(systemName: "safari")
         controllers.append(discoverController)

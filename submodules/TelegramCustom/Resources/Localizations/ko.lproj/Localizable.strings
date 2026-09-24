@@ -33,3 +33,23 @@
 /* Discover Placeholder */
 "discover.placeholder.title" = "발견";
 "discover.placeholder.subtitle" = "곧 출시";
+
+/* Discover */
+"discover.tab.wallet" = "Web3 지갑";
+"discover.tab.explore" = "생태계 탐색";
+"discover.banner.tag" = "슈퍼 생태계 프로모션";
+"discover.banner.title" = "Sui & ETH 크로스체인 가스리스 트레이딩 페스티벌";
+"discover.banner.subtitle" = "원활한 서명, 플랫폼이 온체인 가스비 100% 지원";
+"discover.banner.action" = "지금 참여 →";
+"discover.tools.section" = "핵심 도구";
+"discover.tool.meeting" = "Web3 회의";
+"discover.tool.meeting.desc" = "고화질/제어 가능한 녹화";
+"discover.tool.vpn" = "보안 VPN";
+"discover.tool.vpn.desc" = "8.5 GB 남음";
+"discover.tool.escrow" = "u다오 보증";
+"discover.tool.escrow.desc" = "멀티시그/사기 방지 검증";
+"discover.dapp.section" = "인기 Web3 DApp";
+"discover.dapp.uniswap.desc" = "탈중앙화 스왑 거래소";
+"discover.dapp.opensea.desc" = "NFT 마켓플레이스";
+"discover.dapp.action" = "열기";
+"discover.comingSoon" = "곧 출시";

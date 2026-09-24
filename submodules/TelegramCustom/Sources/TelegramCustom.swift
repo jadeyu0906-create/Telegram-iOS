@@ -13,5 +13,6 @@ import Foundation
 // 日期：2026-09-23
 @_exported import CustomTabBar
 @_exported import DiscoverPlaceholder
+@_exported import Discover
 // ==================== CUSTOM END ====================
 

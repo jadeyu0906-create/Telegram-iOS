@@ -134,13 +134,13 @@ public final class CustomTabBarComponent: Component {
     func update(component: CustomTabBarComponent, availableSize: CGSize, state: EmptyComponentState, environment: Environment<Empty>, transition: ComponentTransition) -> CGSize {
         self.component = component
 
-        // 更新背景
-        let backgroundFrame = CGRect(origin: .zero, size: availableSize)
-        transition.setFrame(view: self.backgroundView, frame: backgroundFrame)
-
-        // 计算 Tab Bar 高度
+        // 计算 Tab Bar 高度（含底部安全区域，覆盖到屏幕底部）
         let itemHeight: CGFloat = 49.0
         let totalHeight = itemHeight + component.outerInsets.bottom
+
+        // 更新背景（覆盖到屏幕底部，含安全区域）
+        let backgroundFrame = CGRect(origin: .zero, size: CGSize(width: availableSize.width, height: totalHeight))
+        transition.setFrame(view: self.backgroundView, frame: backgroundFrame)
 
         // 计算每个 item 的宽度
         let itemWidth = availableSize.width / CGFloat(component.items.count)

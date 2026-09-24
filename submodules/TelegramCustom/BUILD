@@ -64,6 +64,20 @@ swift_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+swift_library(
+    name = "DiscoverModule",
+    module_name = "Discover",
+    srcs = glob([
+        "Sources/Features/Discover/**/*.swift",
+    ]),
+    deps = [
+        ":TelegramCustomCore",
+        "//submodules/Display:Display",
+        "//submodules/AsyncDisplayKit:AsyncDisplayKit",
+    ],
+    visibility = ["//visibility:public"],
+)
 # ==================== CUSTOM END ====================
 
 # 多语言资源
@@ -84,6 +98,7 @@ swift_library(
         ":LoginScreenModule",
         ":CustomTabBarModule",
         ":DiscoverPlaceholderModule",
+        ":DiscoverModule",
     ],
     visibility = ["//visibility:public"],
 )

@@ -10,7 +10,7 @@ public enum AppConstants {
     // MARK: - Splash Screen
 
     /// 开屏页倒计时秒数
-    public static let splashCountdownSeconds = 30
+    public static let splashCountdownSeconds = 3
 
     // MARK: - Feature Flags
 

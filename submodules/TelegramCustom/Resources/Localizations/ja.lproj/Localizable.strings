@@ -33,3 +33,23 @@
 /* Discover Placeholder */
 "discover.placeholder.title" = "発見";
 "discover.placeholder.subtitle" = "近日公開";
+
+/* Discover */
+"discover.tab.wallet" = "Web3 ウォレット";
+"discover.tab.explore" = "エコシステム探索";
+"discover.banner.tag" = "スーパーエコシステムプロモ";
+"discover.banner.title" = "Sui & ETH クロスチェーン Gasless 取引フェス";
+"discover.banner.subtitle" = "シームレス署名、プラットフォームがオンチェーンガス代100%負担";
+"discover.banner.action" = "今すぐ参加 →";
+"discover.tools.section" = "コアツール";
+"discover.tool.meeting" = "Web3 会議";
+"discover.tool.meeting.desc" = "高画質/制御可能な録画";
+"discover.tool.vpn" = "セキュア VPN";
+"discover.tool.vpn.desc" = "残り 8.5 GB";
+"discover.tool.escrow" = "u多保証";
+"discover.tool.escrow.desc" = "マルチシグ/詐欺防止検証";
+"discover.dapp.section" = "人気 Web3 DApp";
+"discover.dapp.uniswap.desc" = "分散型 Swap 取引所";
+"discover.dapp.opensea.desc" = "NFT マーケットプレイス";
+"discover.dapp.action" = "開く";
+"discover.comingSoon" = "近日公開";

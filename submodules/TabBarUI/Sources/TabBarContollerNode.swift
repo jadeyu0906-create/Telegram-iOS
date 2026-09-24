@@ -310,10 +310,10 @@ final class TabBarControllerNode: ASDisplayNode {
                 strings: self.strings,
                 items: self.convertToCustomTabBarItems(),
                 selectedId: selectedId,
-                outerInsets: UIEdgeInsets(top: 0.0, left: sideInset, bottom: tabBarBottomInset, right: sideInset)
+                outerInsets: UIEdgeInsets(top: 0.0, left: 0.0, bottom: tabBarBottomInset, right: 0.0)
             )),
             environment: {},
-            containerSize: CGSize(width: params.layout.size.width - sideInset * 2.0, height: 100.0)
+            containerSize: CGSize(width: params.layout.size.width, height: 100.0)
         )
         #else
         let tabBarSize = self.tabBarView.update(
@@ -377,8 +377,18 @@ final class TabBarControllerNode: ASDisplayNode {
         )
         #endif
         // ==================== CUSTOM END ====================
+        // ==================== CUSTOM START ====================
+        // 描述：自定义 Tab Bar 覆盖到屏幕底部（含安全区域）
+        // 文件：TabBarControllerNode.swift
+        // 日期：2026-09-23
+        // 注意：同步 upstream 时保留此块
+        #if ENABLE_WEB3_SPLASH
+        let tabBarFrame = CGRect(origin: CGPoint(x: 0.0, y: params.layout.size.height - (self.tabBarHidden ? 0.0 : tabBarSize.height)), size: tabBarSize)
+        #else
         let tabBarFrame = CGRect(origin: CGPoint(x: floor((params.layout.size.width - tabBarSize.width) * 0.5), y: params.layout.size.height - (self.tabBarHidden ? 0.0 : (tabBarSize.height + tabBarBottomInset))), size: tabBarSize)
-        
+        #endif
+        // ==================== CUSTOM END ====================
+
         if let tabBarComponentView = self.tabBarView.view {
             if tabBarComponentView.superview == nil {
                 self.view.addSubview(tabBarComponentView)
