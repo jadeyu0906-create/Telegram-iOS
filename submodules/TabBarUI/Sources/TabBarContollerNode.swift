@@ -8,6 +8,14 @@ import ComponentDisplayAdapters
 import TabBarComponent
 import GlassControls
 
+// ==================== CUSTOM START ====================
+// 描述：导入 TelegramCustom 模块以使用自定义 Tab Bar
+// 文件：TabBarControllerNode.swift
+// 日期：2026-09-23
+// 注意：同步 upstream 时保留此块
+import TelegramCustom
+// ==================== CUSTOM END ====================
+
 final class TabBarControllerNode: ASDisplayNode {
     private struct Params: Equatable {
         let layout: ContainerViewLayout
@@ -191,7 +199,61 @@ final class TabBarControllerNode: ASDisplayNode {
         self.isUpdateRequested = true
         self.view.setNeedsLayout()
     }
-    
+
+    // ==================== CUSTOM START ====================
+    private func convertToCustomTabBarItems() -> [CustomTabBarComponent.Item] {
+        return self.tabBarItems.enumerated().map { index, nodeItem in
+            let tabBarItem = nodeItem.item
+            let itemId = AnyHashable(ObjectIdentifier(tabBarItem))
+
+            // 根据 tab 位置选择图标
+            let iconSystemName: String
+            switch index {
+            case 0: iconSystemName = "message.fill"          // 聊天
+            case 1: iconSystemName = "person.crop.circle"    // 联系人
+            case 2: iconSystemName = "safari"                // 发现
+            case 3: iconSystemName = "person.fill"           // 我的
+            default: iconSystemName = "circle"
+            }
+
+            // 根据 tab 位置选择标题
+            let title: String
+            switch index {
+            case 0: title = "tabbar.chat.title".localized
+            case 1: title = "tabbar.contacts.title".localized
+            case 2: title = "tabbar.discover.title".localized
+            case 3: title = "tabbar.mine.title".localized
+            default: title = tabBarItem.title ?? ""
+            }
+
+            return CustomTabBarComponent.Item(
+                id: itemId,
+                title: title,
+                iconSystemName: iconSystemName,
+                badge: tabBarItem.badgeValue,
+                action: { [weak self] isLongTap in
+                    guard let self else { return }
+                    if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
+                        self.itemSelected(index, isLongTap, [])
+                    }
+                },
+                doubleTapAction: self.itemHasDoubleTapAction(index) ? { [weak self] in
+                    guard let self else { return }
+                    if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
+                        self.itemDoubleTapped(index)
+                    }
+                } : nil,
+                contextAction: { [weak self] gesture, sourceView in
+                    guard let self else { return }
+                    if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
+                        self.contextAction(index, sourceView, gesture)
+                    }
+                }
+            )
+        }
+    }
+    // ==================== CUSTOM END ====================
+
     private func updateImpl(params: Params, transition: ContainedViewLayoutTransition) -> CGFloat {
         var panelsBottomInset: CGFloat = params.layout.insets(options: []).bottom
         if params.layout.metrics.widthClass == .regular, let inputHeight = params.layout.inputHeight, inputHeight != 0.0 {
@@ -227,67 +289,20 @@ final class TabBarControllerNode: ASDisplayNode {
         if self.tabBarView.view == nil {
             tabBarTransition = .immediate
         }
+        // ==================== CUSTOM START ====================
         let tabBarSize = self.tabBarView.update(
             transition: tabBarTransition,
-            component: AnyComponent(TabBarComponent(
+            component: AnyComponent(CustomTabBarComponent(
                 theme: self.theme,
                 strings: self.strings,
-                items: self.tabBarItems.map { item in
-                    let itemId = AnyHashable(ObjectIdentifier(item.item))
-                    
-                    let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) ?? 0
-                    
-                    return TabBarComponent.Item(
-                        content: .tabBarItem(item.item),
-                        action: { [weak self] isLongTap in
-                            guard let self else {
-                                return
-                            }
-                            if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
-                                self.itemSelected(index, isLongTap, [])
-                            }
-                        },
-                        doubleTapAction: self.itemHasDoubleTapAction(index) ? { [weak self] in
-                            guard let self else {
-                                return
-                            }
-                            if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
-                                self.itemDoubleTapped(index)
-                            }
-                        } : nil,
-                        contextAction: { [weak self] gesture, sourceView in
-                            guard let self else {
-                                return
-                            }
-                            if let index = self.tabBarItems.firstIndex(where: { AnyHashable(ObjectIdentifier($0.item)) == itemId }) {
-                                self.contextAction(index, sourceView, gesture)
-                            }
-                        }
-                    )
-                },
-                search: self.currentController?.tabBarSearchState.flatMap { tabBarSearchState in
-                    return TabBarComponent.Search(
-                        isActive: tabBarSearchState.isActive,
-                        activate: { [weak self] in
-                            guard let self else {
-                                return
-                            }
-                            self.activateSearch()
-                        },
-                        deactivate: { [weak self] in
-                            guard let self else {
-                                return
-                            }
-                            self.deactivateSearch()
-                        }
-                    )
-                },
+                items: self.convertToCustomTabBarItems(),
                 selectedId: selectedId,
                 outerInsets: UIEdgeInsets(top: 0.0, left: sideInset, bottom: tabBarBottomInset, right: sideInset)
             )),
             environment: {},
             containerSize: CGSize(width: params.layout.size.width - sideInset * 2.0, height: 100.0)
         )
+        // ==================== CUSTOM END ====================
         let tabBarFrame = CGRect(origin: CGPoint(x: floor((params.layout.size.width - tabBarSize.width) * 0.5), y: params.layout.size.height - (self.tabBarHidden ? 0.0 : (tabBarSize.height + tabBarBottomInset))), size: tabBarSize)
         
         if let tabBarComponentView = self.tabBarView.view {

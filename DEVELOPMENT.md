@@ -322,7 +322,61 @@ swift_library(
 - 确认生效后再恢复正确的值
 - 避免连续多次只改 padding 等不明显的数值
 
-### 2. 模块依赖与导出
+### 2. 条件编译与 BUILD 配置
+
+#### ⚠️ 条件编译标志必须在所有相关模块配置
+
+**现象**: 代码中使用 `#if ENABLE_WEB3_SPLASH` 但功能未生效，改动的代码没有被编译。
+
+**原因**: 条件编译需要在**两个地方**同时配置：
+1. **编译宏定义** (`copts` 中添加 `-DENABLE_WEB3_SPLASH`)
+2. **模块依赖** (添加 TelegramCustom 依赖)
+
+**错误示例** - 只修改代码，不修改 BUILD：
+```swift
+// TabBarControllerNode.swift
+#if ENABLE_WEB3_SPLASH
+import TelegramCustom  // ← 编译时这段代码被跳过，因为宏未定义
+#endif
+```
+
+**正确做法** - 必须同时修改 BUILD 文件：
+
+```python
+# submodules/TabBarUI/BUILD
+swift_library(
+    name = "TabBarUI",
+    copts = [
+        "-warnings-as-errors",
+    ] + select({
+        "//Telegram:enableWeb3SplashSetting": ["-DENABLE_WEB3_SPLASH"],  # ← 1. 定义编译宏
+        "//conditions:default": [],
+    }),
+    deps = [
+        "//submodules/Display",
+        # ...其他依赖...
+    ] + select({
+        "//Telegram:enableWeb3SplashSetting": ["//submodules/TelegramCustom:TelegramCustom"],  # ← 2. 添加依赖
+        "//conditions:default": [],
+    }),
+)
+```
+
+**检查清单**:
+- [ ] 在使用条件编译的模块 BUILD 文件中添加 `copts` 编译宏
+- [ ] 在使用条件编译的模块 BUILD 文件中添加 TelegramCustom 依赖
+- [ ] 构建脚本中传递 `--//Telegram:enableWeb3Splash` flag
+- [ ] 验证编译日志中该模块被重新编译（不是 action cache hit）
+
+**验证方法**:
+```bash
+# 编译后检查模块是否重新编译
+./dev/run-simulator.sh 2>&1 | grep "Compiling.*TabBarUI"
+# 应该看到类似输出：
+# [1,744 / 1,762] Compiling Swift module //submodules/TabBarUI:TabBarUI
+```
+
+### 3. 模块依赖与导出
 
 #### ⚠️ Module 导出必须使用 @_exported
 
@@ -552,17 +606,28 @@ docs: update development guide with cache issues
 
 - ✅ **推荐**: 所有自定义功能放在 `submodules/TelegramCustom/` 中
 - ✅ 这个目录是我们自己创建的，upstream 永远不会有冲突
+- ✅ **TelegramCustom 目录内的文件不需要 CUSTOM 标记**（因为整个目录都是自定义的）
 - ❌ **避免**: 直接修改 `submodules/TelegramUI/` 等官方模块的大量文件
 
-**2. 必须修改源码时，使用明确标记**
+**2. 必须修改 Telegram 官方源码时，使用明确标记**
 
-当必须修改官方源码文件（如 `AppDelegate.swift`）时，使用标准标记：
+**何时需要 CUSTOM 标记：**
+- 修改 `submodules/TelegramUI/`、`submodules/TelegramCore/`、`submodules/TabBarUI/` 等 **Telegram 官方模块**
+- 修改 `Telegram/BUILD`、主 `BUILD` 文件等配置文件
+- 修改 `AppDelegate.swift` 等入口文件
+
+**何时不需要 CUSTOM 标记：**
+- `submodules/TelegramCustom/` 目录下的所有文件（整个目录都是自定义的）
+- `docs/`、`dev/` 等我们自己创建的目录
+- 新增的配置文件（如 `build-system/bchat-configuration.json`）
+
+当必须修改官方源码文件（如 `AppDelegate.swift`、`TabBarControllerNode.swift`）时，使用标准标记：
 
 ```swift
 // ==================== CUSTOM START ====================
 // 描述：集成 Web3 开屏页与登录页
 // 文件：AppDelegate.swift
-// 日期：2026-09-22
+// 日期：2026-09-23
 // 注意：同步 upstream 时保留此块
 #if ENABLE_WEB3_SPLASH
 import TelegramCustom

@@ -23,3 +23,13 @@
 "login.button.quick" = "ワンクリックアクセス（クイックスタート）";
 "login.legal" = "ログインすることで、利用規約とプライバシーポリシーに同意したものとみなされます";
 "login.quick.coming_soon" = "機能開発中";
+
+/* Tab Bar */
+"tabbar.chat.title" = "チャット";
+"tabbar.contacts.title" = "連絡先";
+"tabbar.discover.title" = "発見";
+"tabbar.mine.title" = "自分";
+
+/* Discover Placeholder */
+"discover.placeholder.title" = "発見";
+"discover.placeholder.subtitle" = "近日公開";

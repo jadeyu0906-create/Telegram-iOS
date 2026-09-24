@@ -23,3 +23,13 @@
 "login.button.quick" = "一键免密接入 (快速体验)";
 "login.legal" = "登录即代表您同意《服务条款》与《隐私政策》";
 "login.quick.coming_soon" = "功能开发中，敬请期待";
+
+/* Tab Bar */
+"tabbar.chat.title" = "聊天";
+"tabbar.contacts.title" = "联系人";
+"tabbar.discover.title" = "发现";
+"tabbar.mine.title" = "我的";
+
+/* Discover Placeholder */
+"discover.placeholder.title" = "发现";
+"discover.placeholder.subtitle" = "即将推出";

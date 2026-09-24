@@ -20,6 +20,7 @@ swift_library(
         "//submodules/Components/ComponentDisplayAdapters",
         "//submodules/TelegramUI/Components/TabBarComponent",
         "//submodules/TelegramUI/Components/GlassControls",
+        "//submodules/TelegramCustom:TelegramCustom",
     ],
     visibility = [
         "//visibility:public",

@@ -23,3 +23,13 @@
 "login.button.quick" = "One-Click Access (Quick Start)";
 "login.legal" = "By logging in, you agree to our Terms of Service and Privacy Policy";
 "login.quick.coming_soon" = "Feature coming soon";
+
+/* Tab Bar */
+"tabbar.chat.title" = "Chats";
+"tabbar.contacts.title" = "Contacts";
+"tabbar.discover.title" = "Discover";
+"tabbar.mine.title" = "Me";
+
+/* Discover Placeholder */
+"discover.placeholder.title" = "Discover";
+"discover.placeholder.subtitle" = "Coming Soon";

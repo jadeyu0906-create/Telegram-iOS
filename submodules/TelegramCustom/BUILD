@@ -30,6 +30,42 @@ swift_library(
     visibility = ["//visibility:public"],
 )
 
+# ==================== CUSTOM START ====================
+# 描述：添加 CustomTabBar 和 DiscoverPlaceholder 模块
+# 文件：TelegramCustom/BUILD
+# 日期：2026-09-23
+
+swift_library(
+    name = "CustomTabBarModule",
+    module_name = "CustomTabBar",
+    srcs = glob([
+        "Sources/Features/CustomTabBar/**/*.swift",
+    ]),
+    deps = [
+        ":TelegramCustomCore",
+        "//submodules/Display:Display",
+        "//submodules/ComponentFlow:ComponentFlow",
+        "//submodules/TelegramPresentationData:TelegramPresentationData",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+swift_library(
+    name = "DiscoverPlaceholderModule",
+    module_name = "DiscoverPlaceholder",
+    srcs = glob([
+        "Sources/Features/DiscoverPlaceholder/**/*.swift",
+    ]),
+    deps = [
+        ":TelegramCustomCore",
+        "//submodules/Display:Display",
+        "//submodules/AsyncDisplayKit:AsyncDisplayKit",
+        "//submodules/SSignalKit/SwiftSignalKit:SwiftSignalKit",
+    ],
+    visibility = ["//visibility:public"],
+)
+# ==================== CUSTOM END ====================
+
 # 多语言资源
 apple_resource_bundle(
     name = "LocalizationResources",
@@ -46,6 +82,8 @@ swift_library(
         ":TelegramCustomCore",
         ":SplashScreenModule",
         ":LoginScreenModule",
+        ":CustomTabBarModule",
+        ":DiscoverPlaceholderModule",
     ],
     visibility = ["//visibility:public"],
 )

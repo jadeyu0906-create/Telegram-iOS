@@ -28,10 +28,19 @@ if [[ "${1:-}" != "--no-build" ]]; then
         exit 1
     fi
 
-    echo "==> 编译 Telegram (debug_sim_arm64, 免签名)..."
+    # 如果是首次编译或 flag 文件不存在，清理缓存
+    FLAG_FILE="$HOME/telegram-bazel-cache/.web3_splash_enabled"
+    if [[ ! -f "$FLAG_FILE" ]]; then
+        echo "==> 检测到构建配置改变，清理缓存..."
+        "$BAZEL" clean 2>/dev/null || true
+        rm -rf "$HOME/telegram-bazel-cache/"* 2>/dev/null || true
+        mkdir -p "$HOME/telegram-bazel-cache"
+        echo "web3_splash_enabled" > "$FLAG_FILE"
+    fi
+
+    echo "==> 编译 Telegram (debug_sim_arm64, 免签名, Web3功能已启用)..."
     "$BAZEL" build Telegram/Telegram \
         --define=buildNumber=1 \
-        --disk_cache="$HOME/telegram-bazel-cache" \
         -c dbg \
         --ios_multi_cpus=sim_arm64 \
         --watchos_cpus=arm64_32 \
@@ -39,7 +48,7 @@ if [[ "${1:-}" != "--no-build" ]]; then
         '--@build_bazel_rules_swift//swift:copt=13' \
         --//Telegram:disableExtensions \
         --//Telegram:disableProvisioningProfiles \
-        --//Telegram:enableWeb3Splash
+        --//Telegram:enableWeb3Splash=true
 else
     echo "==> 跳过编译（--no-build）"
 fi

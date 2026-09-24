@@ -18,6 +18,13 @@ import WallpaperBackgroundNode
 import ChatPresentationInterfaceState
 import CameraScreen
 import MediaEditorScreen
+
+// ==================== CUSTOM START ====================
+// 描述：导入 TelegramCustom 以使用 DiscoverPlaceholderViewController
+// 文件：TelegramRootController.swift
+// 日期：2026-09-23
+import TelegramCustom
+// ==================== CUSTOM END ====================
 import LegacyComponents
 import LegacyMediaPickerUI
 import LegacyCamera
@@ -206,20 +213,27 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
             chatListController.tabBarItem.badgeValue = sharedContext.switchingData.chatListBadge
         }
         let callListController = CallListController(context: self.context, mode: .tab)
-        
+
         var controllers: [ViewController] = []
-        
+
         let contactsController = ContactsController(context: self.context)
         contactsController.switchToChatsController = {  [weak self] in
             self?.openChatsController(activateSearch: false)
         }
-        controllers.append(contactsController)
-        
-        if showCallsTab {
-            controllers.append(callListController)
-        }
+
+        // ==================== CUSTOM START ====================
+        // 描述：重新排列 Tab 顺序，添加发现页
+        // 新顺序：Chats, Contacts, Discover, Settings (跳过 Calls)
+        // 文件：TelegramRootController.swift - addRootControllers
+        // 日期：2026-09-23
         controllers.append(chatListController)
-        
+        controllers.append(contactsController)
+        let discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
+        discoverController.tabBarItem.title = "tabbar.discover.title".localized
+        discoverController.tabBarItem.image = UIImage(systemName: "safari")
+        controllers.append(discoverController)
+        // ==================== CUSTOM END ====================
+
         var restoreSettignsController: (ViewController & SettingsController)?
         if let sharedContext = self.context.sharedContext as? SharedAccountContextImpl {
             restoreSettignsController = sharedContext.switchingData.settingsController
@@ -228,7 +242,7 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         if let sharedContext = self.context.sharedContext as? SharedAccountContextImpl {
             sharedContext.switchingData = (nil, nil, nil)
         }
-        
+
         let accountSettingsController = PeerInfoScreenImpl(context: self.context, updatedPresentationData: nil, peerId: self.context.account.peerId, avatarInitiallyExpanded: false, isOpenedFromChat: false, reactionSourceMessageId: nil, callMessages: [], isSettings: true)
         accountSettingsController.tabBarItemDebugTapAction = { [weak self] in
             guard let strongSelf = self else {
@@ -238,9 +252,9 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         }
         accountSettingsController.parentController = self
         controllers.append(accountSettingsController)
-                
-        tabBarController.setControllers(controllers, selectedIndex: restoreSettignsController != nil ? (controllers.count - 1) : (controllers.count - 2))
-        
+
+        tabBarController.setControllers(controllers, selectedIndex: restoreSettignsController != nil ? (controllers.count - 1) : 0)
+
         self.contactsController = contactsController
         self.callListController = callListController
         self.chatListController = chatListController
@@ -254,13 +268,17 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
             return
         }
         var controllers: [ViewController] = []
-        controllers.append(self.contactsController!)
-        if showCallsTab {
-            controllers.append(self.callListController!)
-        }
+
+        // ==================== CUSTOM START ====================
         controllers.append(self.chatListController!)
+        controllers.append(self.contactsController!)
+        let discoverController = DiscoverPlaceholderViewController(navigationBarPresentationData: nil)
+        discoverController.tabBarItem.title = "tabbar.discover.title".localized
+        discoverController.tabBarItem.image = UIImage(systemName: "safari")
+        controllers.append(discoverController)
         controllers.append(self.accountSettingsController!)
-        
+        // ==================== CUSTOM END ====================
+
         rootTabController.setControllers(controllers, selectedIndex: nil)
     }
     

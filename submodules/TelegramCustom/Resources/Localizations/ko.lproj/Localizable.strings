@@ -23,3 +23,13 @@
 "login.button.quick" = "원클릭 액세스 (빠른 시작)";
 "login.legal" = "로그인하면 서비스 약관 및 개인정보 보호정책에 동의하는 것으로 간주됩니다";
 "login.quick.coming_soon" = "기능 개발 중";
+
+/* Tab Bar */
+"tabbar.chat.title" = "채팅";
+"tabbar.contacts.title" = "연락처";
+"tabbar.discover.title" = "발견";
+"tabbar.mine.title" = "내 정보";
+
+/* Discover Placeholder */
+"discover.placeholder.title" = "발견";
+"discover.placeholder.subtitle" = "곧 출시";
