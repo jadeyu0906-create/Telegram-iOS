@@ -171,7 +171,7 @@ submodules/TelegramCustom/
   - `QuickAccessButton`: 一键免密按钮（边框样式）
   - `LegalTextView`: 法律条款文案
   - `LoginScreenView`: 主容器视图
-- **编译标志**: 需要 `--//Telegram:enableWeb3Splash`
+- **编译标志**: 需要 `--//Telegram:enableWeb3Splash=true`
 
 #### 3. 核心工具
 
@@ -273,7 +273,7 @@ swift_library(
 
 - `--//Telegram:disableExtensions` - 不构建扩展
 - `--//Telegram:disableProvisioningProfiles` - 模拟器免签名
-- `--//Telegram:enableWeb3Splash` - 启用自定义模块
+- `--//Telegram:enableWeb3Splash=true` - 启用自定义模块
 
 这些标志已内置在 `dev/run-simulator.sh` 中。
 
@@ -289,38 +289,75 @@ swift_library(
 
 ## 开发规范与注意事项
 
-### 1. 代码编译与缓存
+### 1. 代码编译与缓存（重要，改动不生效 90% 是这里）
 
-#### ⚠️ Bazel 增量编译缓存问题
+改动代码后「模拟器没变化」有两个独立原因，要分开排查：**编译层**（Bazel 没重新编译）和**部署层**（simctl install 没替换）。
 
-**现象**: 修改 SwiftUI 代码后重新编译，但模拟器中看到的界面没有变化。
+#### ⚠️ 1.1 部署缓存：`simctl install` 硬链接缓存（最常踩坑）
 
-**原因**: Bazel 的增量编译机制会缓存编译产物。某些情况下，即使源码改变，Bazel 可能认为不需要重新编译，导致使用旧的 `.o` 文件。
+**现象**: 编译日志显示 `Build completed successfully`，但模拟器里看到的还是旧界面。
 
-**解决方案**:
+**原因**: `simctl install` 在 **build number 不变**时，installd 会保留硬链接缓存，**不会替换已安装的 .app**，导致重新编译的二进制静默不生效。
 
-1. **强制触发重新编译** - 修改一个明显的属性（如背景颜色、文字内容）来"刺激"编译系统识别变化：
-   ```swift
-   // 临时改成明显的颜色测试
-   Color.red  // 改完验证后再改回 ColorPalette.backgroundBlack
-   ```
+**解决**: 用 `cp -Rp` 覆盖整个 .app bundle（`run-simulator.sh` 已内置此逻辑）：
 
-2. **清理缓存重新编译**（极端情况）:
+```bash
+K3=7167319A-CA67-41CA-A2D6-C6477A5EAD5B   # 模拟器 UUID
+BUNDLE=live.bchat.origin
+SRC="$(find -L bazel-out -maxdepth 14 -path '*/Telegram_archive-root/Payload/Telegram.app' -type d | head -1)"
+DEST="$(xcrun simctl get_app_container "$K3" "$BUNDLE" app)"
+[ -x "$SRC/Telegram" ] || { echo "无新构建 $SRC"; exit 1; }
+xcrun simctl terminate "$K3" "$BUNDLE" 2>/dev/null
+rm -rf "$DEST" && cp -Rp "$SRC" "$DEST"
+xcrun simctl launch "$K3" "$BUNDLE"
+```
+
+**注意**：
+- 数据容器（登录态）和 bundle 容器是分开的，`cp` 覆盖只替换 bundle，登录态保留。
+- `bazel-out` 是符号链接，`find` 必须加 `-L`，否则静默返回空。
+
+#### ⚠️ 1.2 编译缓存：Bazel 增量编译
+
+**现象**: 修改代码后，编译日志显示 `action cache hit`，模块没重新编译。
+
+**排查与解决**:
+
+1. **确认模块是否重新编译**（关键判断依据）:
    ```bash
-   rm -rf ~/telegram-bazel-cache/*
-   ./dev/run-simulator.sh
+   ./dev/run-simulator.sh 2>&1 | grep "Compiling Swift module"
+   # 应该看到类似输出：Compiling Swift module //submodules/TelegramCustom:DiscoverModule
    ```
+   如果全是 `action cache hit`，说明 Bazel 认为代码没变，用了旧产物。
 
-3. **验证编译时间戳**:
+2. **强制触发重新编译** - `touch` 修改过的文件：
    ```bash
-   ls -la bazel-bin/submodules/TelegramCustom/LoginScreenModule_objs/Sources/Features/LoginScreen/Views/LoginScreenView.swift.o
+   touch submodules/TelegramCustom/Sources/.../YourFile.swift
    ```
-   检查时间戳是否更新。
 
-**最佳实践**:
-- 每次改 UI 后，先改一个明显的测试属性（颜色/文字）验证生效
-- 确认生效后再恢复正确的值
-- 避免连续多次只改 padding 等不明显的数值
+3. **改动 BUILD 文件后**（copts/deps/select 变了）必须重新编译，否则宏/依赖不生效。
+
+4. **完全清理**（极端情况）:
+   ```bash
+   bazel clean --expunge   # 或删 ~/telegram-bazel-cache/*
+   ```
+
+#### ⚠️ 1.3 验证改动真的生效了（三连查）
+
+改完代码后，按顺序确认：
+
+```bash
+# 1. 编译日志：模块重新编译了吗？
+./dev/run-simulator.sh 2>&1 | grep "Compiling Swift module"
+
+# 2. 产物 MD5 变了吗？（变了说明代码编译进去了）
+SRC="$(find -L bazel-out -maxdepth 14 -path '*/Telegram_archive-root/Payload/Telegram.app' -type d | head -1)"
+md5 "$SRC/Frameworks/TelegramUIFramework.framework/TelegramUIFramework"
+
+# 3. 字符串进产物了吗？（最可靠）
+strings "$SRC/Frameworks/TelegramUIFramework.framework/TelegramUIFramework" | grep "你的关键字"
+```
+
+**关键认知**：主 `Telegram` 二进制只有 259K（启动器），真正的代码在 `Frameworks/TelegramUIFramework.framework/TelegramUIFramework`（几百 MB）。检查 strings/MD5 要查框架，不是主二进制。
 
 ### 2. 条件编译与 BUILD 配置
 
@@ -365,7 +402,7 @@ swift_library(
 **检查清单**:
 - [ ] 在使用条件编译的模块 BUILD 文件中添加 `copts` 编译宏
 - [ ] 在使用条件编译的模块 BUILD 文件中添加 TelegramCustom 依赖
-- [ ] 构建脚本中传递 `--//Telegram:enableWeb3Splash` flag
+- [ ] 构建脚本中传递 `--//Telegram:enableWeb3Splash=true` flag
 - [ ] 验证编译日志中该模块被重新编译（不是 action cache hit）
 
 **验证方法**:
@@ -437,7 +474,7 @@ swift_library(
 
 **问题**: 代码中使用 `#if ENABLE_WEB3_SPLASH` 但功能未生效。
 
-**原因**: Bazel 构建时未传递 `--//Telegram:enableWeb3Splash` 标志，导致条件编译块被排除。
+**原因**: Bazel 构建时未传递 `--//Telegram:enableWeb3Splash=true` 标志，导致条件编译块被排除。
 
 **检查 BUILD 配置**:
 ```python
@@ -461,7 +498,7 @@ config_setting(
 bazel build Telegram/Telegram \
     --//Telegram:disableExtensions \
     --//Telegram:disableProvisioningProfiles \
-    --//Telegram:enableWeb3Splash  # ← 必须显式启用
+    --//Telegram:enableWeb3Splash=true  # ← 必须显式启用
 ```
 
 **使用条件依赖**:

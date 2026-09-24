@@ -28,16 +28,6 @@ if [[ "${1:-}" != "--no-build" ]]; then
         exit 1
     fi
 
-    # 如果是首次编译或 flag 文件不存在，清理缓存
-    FLAG_FILE="$HOME/telegram-bazel-cache/.web3_splash_enabled"
-    if [[ ! -f "$FLAG_FILE" ]]; then
-        echo "==> 检测到构建配置改变，清理缓存..."
-        "$BAZEL" clean 2>/dev/null || true
-        rm -rf "$HOME/telegram-bazel-cache/"* 2>/dev/null || true
-        mkdir -p "$HOME/telegram-bazel-cache"
-        echo "web3_splash_enabled" > "$FLAG_FILE"
-    fi
-
     echo "==> 编译 Telegram (debug_sim_arm64, 免签名, Web3功能已启用)..."
     "$BAZEL" build Telegram/Telegram \
         --define=buildNumber=1 \
@@ -54,7 +44,9 @@ else
 fi
 
 # ===== 找到 .app 产物 =====
-APP="$(find -L bazel-out -maxdepth 12 -name 'Telegram.app' -type d 2>/dev/null | head -1)"
+# 注意：用 Telegram_archive-root/Payload/Telegram.app（整个 unzipped bundle），
+# 而不是散落的 Telegram.app（bazel-out 是符号链接，find 必须加 -L）
+APP="$(find -L bazel-out -maxdepth 14 -path '*/Telegram_archive-root/Payload/Telegram.app' -type d 2>/dev/null | head -1)"
 if [[ -z "$APP" ]] || [[ ! -x "$APP/Telegram" ]]; then
     echo "错误: 找不到构建产物 Telegram.app（$APP）" >&2
     exit 1
@@ -79,9 +71,20 @@ echo "==> 模拟器: $SIM_UUID"
 xcrun simctl boot "$SIM_UUID" 2>/dev/null || true
 open -a Simulator 2>/dev/null || true
 
-# ===== 安装 =====
-echo "==> 安装 $BUNDLE_ID ..."
-xcrun simctl install "$SIM_UUID" "$APP"
+# ===== 部署（cp 覆盖，避开 simctl install 硬链接缓存）=====
+# simctl install 在 build number 不变时不会替换已安装应用（installd 硬链接缓存），
+# 导致重新编译的二进制静默不生效。改用 cp 覆盖整个 .app bundle。
+echo "==> 部署 $BUNDLE_ID ..."
+DEST="$(xcrun simctl get_app_container "$SIM_UUID" "$BUNDLE_ID" app 2>/dev/null || true)"
+if [ -n "$DEST" ] && [ -d "$DEST" ]; then
+    # 已安装：terminate + rm + cp 覆盖（数据容器独立，登录态保留）
+    xcrun simctl terminate "$SIM_UUID" "$BUNDLE_ID" 2>/dev/null
+    rm -rf "$DEST"
+    cp -Rp "$APP" "$DEST"
+else
+    # 首次安装：用 simctl install
+    xcrun simctl install "$SIM_UUID" "$APP"
+fi
 
 # ===== 启动 =====
 echo "==> 启动 $BUNDLE_ID ..."
