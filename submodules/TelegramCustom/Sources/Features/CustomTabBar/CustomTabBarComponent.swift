@@ -136,6 +136,11 @@ public final class CustomTabBarComponent: Component {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        // 只响应内容区（y < 49pt），底部安全区域（Home Indicator）不拦截触摸
+        return point.y >= 0.0 && point.y < 49.0
+    }
+
     func update(component: CustomTabBarComponent, availableSize: CGSize, state: EmptyComponentState, environment: Environment<Empty>, transition: ComponentTransition) -> CGSize {
         self.component = component
 
@@ -151,8 +156,10 @@ public final class CustomTabBarComponent: Component {
         let separatorFrame = CGRect(origin: .zero, size: CGSize(width: availableSize.width, height: 1.0))
         transition.setFrame(view: self.separatorView, frame: separatorFrame)
 
-        // 计算每个 item 的宽度
-        let itemWidth = availableSize.width / CGFloat(component.items.count)
+        // 计算每个 item 的宽度（首尾各缩进半个图标宽度 14pt，中间 4 个 tab 等距）
+        let sideInset: CGFloat = 14.0
+        let contentWidth = availableSize.width - sideInset * 2.0
+        let itemWidth = contentWidth / CGFloat(component.items.count)
 
         // 更新或创建 item views
         var validIds = Set<AnyHashable>()
@@ -188,7 +195,7 @@ public final class CustomTabBarComponent: Component {
 
             // 布局 item
             let itemFrame = CGRect(
-                x: CGFloat(index) * itemWidth,
+                x: sideInset + CGFloat(index) * itemWidth,
                 y: 0,
                 width: itemWidth,
                 height: itemHeight
@@ -220,16 +227,7 @@ public final class CustomTabBarComponent: Component {
 
         let item = component.items[itemView.tag]
 
-        // 点击动画
-        UIView.animate(withDuration: 0.1, animations: {
-            itemView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-        }) { _ in
-            UIView.animate(withDuration: 0.1) {
-                itemView.transform = .identity
-            }
-        }
-
-        // 触发回调
+        // 触发回调（变色由 isSelected 处理，无缩放动画）
         item.action(false)
     }
     }

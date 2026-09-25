@@ -91,7 +91,7 @@ final class CustomTabBarItemView: UIView {
         let spacing: CGFloat = 4.0
 
         // 图标居中，距离顶部一定距离
-        let iconY: CGFloat = 3.0
+        let iconY: CGFloat = 10.0
         let iconFrame = CGRect(
             x: (bounds.width - iconSize) / 2.0,
             y: iconY,
